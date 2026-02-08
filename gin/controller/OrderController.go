@@ -7,29 +7,37 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func AddOrder(c *gin.Context) {
+type OrderController struct {
+	orderDao *OrderDao
+}
+
+func (o *OrderController) AddOrder(c *gin.Context) {
 	var order Order
 	if err := c.ShouldBindBodyWithJSON(&order); err != nil {
 		c.JSON(400, gin.H{"error": err.Error()})
 		return
 	}
-	InsertOrder(&order)
+	o.orderDao.InsertOrder(&order)
 	c.JSON(200, gin.H{"message": "Order added successfully"})
 }
 
-func GetOrders(c *gin.Context) {
+func (o *OrderController) GetOrders(c *gin.Context) {
 	id := c.Param("id")
 	newid, _ := strconv.Atoi(id)
-	order := SelectById(newid)
+	order := o.orderDao.SelectById(newid)
 	c.JSON(200, order)
 }
 
-func UpdateOrderInfo(c *gin.Context) {
+func (o *OrderController) UpdateOrderInfo(c *gin.Context) {
 	var order Order
 	if err := c.ShouldBindBodyWithJSON(&order); err != nil {
 		c.JSON(400, gin.H{"error": err.Error()})
 		return
 	}
-	UpdateOrder(&order)
+	o.orderDao.UpdateOrder(&order)
 	c.JSON(200, gin.H{"message": "Order added successfully"})
+}
+
+func NewOrderController(repo *OrderDao) *OrderController {
+	return &OrderController{}
 }

@@ -9,15 +9,19 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func SelectUserById(c *gin.Context) {
+type UserController struct {
+	userDao *UserDao
+}
+
+func (u *UserController) SelectUserById(c *gin.Context) {
 	id := c.DefaultQuery("id", "4")
 	num, _ := strconv.Atoi(id)
-	user := SelectById(num)
+	user := u.userDao.SelectById(num)
 	c.JSON(http.StatusOK, user)
 
 }
 
-func InserUser(c *gin.Context) {
+func (u *UserController) InsertUser(c *gin.Context) {
 	var user User
 
 	if err := c.ShouldBindBodyWithJSON(&user); err != nil {
@@ -25,11 +29,11 @@ func InserUser(c *gin.Context) {
 		return
 	}
 
-	AddUser(&user)
+	u.userDao.AddUser(&user)
 	c.JSON(http.StatusOK, user)
 }
 
-func UpdateUserInfo(c *gin.Context) {
+func (u *UserController) UpdateUserInfo(c *gin.Context) {
 	id := c.Param("id")
 	var user User
 	if err := c.ShouldBindBodyWithJSON(&user); err != nil {
@@ -41,12 +45,16 @@ func UpdateUserInfo(c *gin.Context) {
 		log.Panic("number conversion error:", err)
 	}
 	user.Id = num
-	UpdateUser(&user)
+	u.userDao.UpdateUser(&user)
 	c.JSON(http.StatusOK, user)
 }
 
-func SelectUserList(c *gin.Context) {
+func (u *UserController) SelectUserList(c *gin.Context) {
 	var users []User
-	SelectAll(&users)
+	u.userDao.SelectAll(&users)
 	c.JSON(http.StatusOK, users)
+}
+
+func NewUserController(userDao *UserDao) *UserController {
+	return &UserController{userDao: userDao}
 }
