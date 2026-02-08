@@ -2,7 +2,7 @@ package user
 
 import (
 	"fmt"
-	"web/db"
+	db "web/conf/db"
 )
 
 type UserDao struct {

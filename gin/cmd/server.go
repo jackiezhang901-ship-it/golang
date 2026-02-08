@@ -3,8 +3,8 @@ package cmd
 import (
 	"fmt"
 	"net/http"
-	"web/db"
 
+	db "web/conf/db"
 	. "web/log"
 	. "web/middleware"
 

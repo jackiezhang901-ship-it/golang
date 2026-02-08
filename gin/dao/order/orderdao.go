@@ -2,7 +2,7 @@ package order
 
 import (
 	"fmt"
-	. "web/db"
+	. "web/conf/db"
 )
 
 type OrderDao struct {

@@ -1,10 +1,9 @@
-package db
+package config
 
 import (
 	"fmt"
 	"log"
 	"time"
-	config "web/db/conf"
 
 	"github.com/spf13/viper"
 	"gorm.io/driver/mysql"
@@ -24,7 +23,7 @@ func InitDB() {
 		log.Fatalf("failed to connect database: %v", err)
 	}
 
-	DB = db 
+	DB = db
 	// 获取通用数据库对象 sql.DB ，以便于显示地设置连接池参数
 	sqlDB, err := db.DB()
 
@@ -44,10 +43,10 @@ func InitDB() {
 	fmt.Println("Database connected and connection pool configured successfully!")
 }
 
-func getDbInfo() config.Config {
+func getDbInfo() Config {
 	viper.SetConfigName("db")        // 设置配置文件名（不带扩展名）
 	viper.SetConfigType("yaml")      // 如果配置文件名中没有扩展名，则需要设置
-	viper.AddConfigPath("./db/conf") // 添加搜索路径（当前目录）
+	viper.AddConfigPath("./conf/db") // 添加搜索路径（当前目录）
 
 	// 尝试读取配置文件
 	if err := viper.ReadInConfig(); err != nil {
@@ -56,7 +55,7 @@ func getDbInfo() config.Config {
 
 	fmt.Println("Using config file:", viper.ConfigFileUsed())
 	// 解析到结构体
-	var config config.Config
+	var config Config
 	if err := viper.Unmarshal(&config); err != nil {
 		fmt.Printf("Unable to decode into struct, %v", err)
 	}
