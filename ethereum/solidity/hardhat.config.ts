@@ -1,8 +1,11 @@
-import type { HardhatUserConfig } from "hardhat/config";
-import "@nomicfoundation/hardhat-toolbox";
-
-const config: HardhatUserConfig = {
-  solidity: "0.8.28",
+module.exports = {
+  networks: {
+    localhost: {
+      url: "http://127.0.0.1:8545",
+      mining: {
+        auto: true,
+        interval: 0  // 立即挖块
+      }
+    }
+  }
 };
-
-export default config;

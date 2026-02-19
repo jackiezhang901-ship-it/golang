@@ -3,10 +3,12 @@
 /* eslint-disable */
 import type {
   BaseContract,
+  BigNumberish,
   BytesLike,
   FunctionFragment,
   Result,
   Interface,
+  EventFragment,
   ContractRunner,
   ContractMethod,
   Listener,
@@ -15,12 +17,15 @@ import type {
   TypedContractEvent,
   TypedDeferredTopicFilter,
   TypedEventLog,
+  TypedLogDescription,
   TypedListener,
   TypedContractMethod,
 } from "../common";
 
 export interface CounterInterface extends Interface {
   getFunction(nameOrSignature: "count" | "get" | "increment"): FunctionFragment;
+
+  getEvent(nameOrSignatureOrTopic: "CountIncremented"): EventFragment;
 
   encodeFunctionData(functionFragment: "count", values?: undefined): string;
   encodeFunctionData(functionFragment: "get", values?: undefined): string;
@@ -29,6 +34,18 @@ export interface CounterInterface extends Interface {
   decodeFunctionResult(functionFragment: "count", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "get", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "increment", data: BytesLike): Result;
+}
+
+export namespace CountIncrementedEvent {
+  export type InputTuple = [newCount: BigNumberish];
+  export type OutputTuple = [newCount: bigint];
+  export interface OutputObject {
+    newCount: bigint;
+  }
+  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
+  export type Filter = TypedDeferredTopicFilter<Event>;
+  export type Log = TypedEventLog<Event>;
+  export type LogDescription = TypedLogDescription<Event>;
 }
 
 export interface Counter extends BaseContract {
@@ -94,5 +111,24 @@ export interface Counter extends BaseContract {
     nameOrSignature: "increment"
   ): TypedContractMethod<[], [void], "nonpayable">;
 
-  filters: {};
+  getEvent(
+    key: "CountIncremented"
+  ): TypedContractEvent<
+    CountIncrementedEvent.InputTuple,
+    CountIncrementedEvent.OutputTuple,
+    CountIncrementedEvent.OutputObject
+  >;
+
+  filters: {
+    "CountIncremented(uint256)": TypedContractEvent<
+      CountIncrementedEvent.InputTuple,
+      CountIncrementedEvent.OutputTuple,
+      CountIncrementedEvent.OutputObject
+    >;
+    CountIncremented: TypedContractEvent<
+      CountIncrementedEvent.InputTuple,
+      CountIncrementedEvent.OutputTuple,
+      CountIncrementedEvent.OutputObject
+    >;
+  };
 }

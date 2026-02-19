@@ -1,0 +1,7 @@
+byteLengthQueuingStrategy
+exit
+await ethers.provider.send("evm_mine", [])
+for(let i=0; i<5; i++){ await ethers.provider.send("evm_mine", []) }
+// 挖多个块，例如挖5块
+await ethers.provider.send("evm_mine", [])
+// 挖一个块
